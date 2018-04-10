@@ -15,7 +15,7 @@
             "@php -l plugin.php",
             "phpcs -p"
         ],
-        "zip": "zip -9 visitor-counter-shortcode.zip plugin.php LICENSE.md phpcs.xml composer.json"
+        "zip": "zip -9 visitor-counter-shortcode.zip plugin.php LICENSE.md phpcs.xml composer.json assets/"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.2"
