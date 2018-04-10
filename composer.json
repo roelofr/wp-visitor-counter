@@ -1,0 +1,13 @@
+{
+    "name": "roelof/visitor-counter-shortcode",
+    "description": "Displays the current number of visitors on the site, using a shortcode",
+    "type": "library",
+    "license": "GPL-3",
+    "authors": [
+        {
+            "name": "Roelof",
+            "email": "github@roelof.io",
+            "homepage": "https://github.com/roelofr"
+        }
+    ]
+}
