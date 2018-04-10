@@ -36,20 +36,28 @@ class Plugin
      */
     const WP_SHORTCODE = 'visitor-count';
 
+    const QUERY_RANGE_OPTIONS = [
+        'now' => '15 MINUTE',
+        'hour' => '1 HOUR',
+        'day' => '1 DAY',
+        'week' => '1 WEEK',
+        'month' => '1 MONTH',
+    ];
+
     /**
-     * Query used to count visitors, defaults to last 30 minutes
+     * Query used to count visitors in a given range
      */
     const QUERY_COUNT = <<<SQL
 SELECT COUNT(`ip`) AS `count`
 FROM `%s`
-WHERE `date` > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+WHERE `date` > DATE_SUB(NOW(), INTERVAL %s)
 GROUP BY `ip`
 SQL;
 
     /**
      * Query used to clean up statistic table
      */
-    const QUERY_CLEAN = 'DELETE FROM `%s` WHERE `date` < DATE_SUB(NOW(), INTERVAL 60 MINUTE);';
+    const QUERY_CLEAN = 'DELETE FROM `%s` WHERE `date` < DATE_SUB(NOW(), INTERVAL 1 MONTH);';
 
     /**
      * Query to create the statistics table
@@ -67,6 +75,20 @@ SQL;
      * Query to delete the statistics table
      */
     const QUERY_UNINSTALL = 'DROP TABLE `%s`';
+
+    const ERROR_HTML = <<<HTML
+<div class="vcs_error_dialog">
+    <p><strong>Visitor Counter error</strong></p>
+    <p>
+        The plugin failed to render the live count, since the requested scope
+        (<em>%s</em>) is not available.
+    </p>
+    <p>
+        Please remove the scope or pick one of: %s
+    </p>
+</div>
+<link rel="stylesheet" href="%s" defer />
+HTML;
 
     /**
      * Calculated name of the table
@@ -183,19 +205,53 @@ SQL;
     /**
      * Returns the current number of visitors, as plain text.
      *
+     * @param  array  $attributes Shortcode attributes
      * @return string
      */
-    public function shortcode() : string
+    public function shortcode($attributes) : string
     {
-        // Get count
-        $result = $this->db->get_results(sprintf(self::QUERY_COUNT, $this->tableName));
-
-        if (count($result) == 0) {
-            return number_format_i18n(0);
+        // Check for a scope
+        if (!empty($attributes['scope'])) {
+            $scope = (string) $attributes['scope'];
         } else {
-            $first = array_shift($result);
-            return number_format_i18n($first->count, 0);
+            $scope = 'now';
         }
+
+        // Validate the given scope
+        if (!array_key_exists($scope, self::QUERY_RANGE_OPTIONS)) {
+            return $this->renderError($scope);
+        }
+
+        // Get count, using the given scope1
+        $result = $this->db->get_results(sprintf(
+            self::QUERY_COUNT,
+            $this->tableName,
+            self::QUERY_RANGE_OPTIONS[$scope]
+        ));
+
+        // If there are no results (which is wierd), set count to zero.
+        if (empty($result) || !is_array($result)) {
+            $visitorCount = 0;
+        } else {
+            $visitorCount = array_shift($result)->count;
+        }
+        return number_format_i18n($visitorCount, 0);
+    }
+
+    /**
+     * Renders a rich HTML error in case the counter is misconfigured
+     *
+     * @param  string|null $scope Scope that the user requested
+     * @return string             HTML error
+     */
+    protected function renderError(string $scope = null) : string
+    {
+        return sprintf(
+            self::ERROR_HTML,
+            $scope,
+            implode(', ', array_keys(self::QUERY_RANGE_OPTIONS)),
+            plugins_url('/assets/error.css', __FILE__)
+        );
     }
 
     /**
