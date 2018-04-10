@@ -1,0 +1,28 @@
+version: '2.0'
+
+volumes:
+    mysql:
+
+services:
+    wordpress:
+        image: roelofr/wordpress:latest
+        ports:
+            - "127.10.50.1:80:80"
+        volumes:
+            - .:/var/www/html/wp-content/plugins/visitor-counter-shortcode
+        depends_on:
+            - mysql
+        environment:
+            WORDPRESS_DB_HOST: mysql
+            WORDPRESS_DB_NAME: wordpress
+            WORDPRESS_DB_USER: wordpress
+            WORDPRESS_DB_PASSWORD: OhShais6nie7lae4bohn1ohph1vophie
+    mysql:
+        image: mariadb
+        volumes:
+            - mysql:/usr/share/mysql
+        environment:
+            MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: OhShais6nie7lae4bohn1ohph1vophie
