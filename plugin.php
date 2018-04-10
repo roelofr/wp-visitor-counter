@@ -3,7 +3,7 @@ declare(strict_types=1);
 /*
 Plugin Name: Visitor Counter Shortcode
 Description: Displays the current number of visitors on the site
-Version: 1.0
+Version: 1.1
 Author: Roelof
 Author URI: https://www.github.com/roelofr/
 License: GPL-3
