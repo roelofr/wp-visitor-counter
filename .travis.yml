@@ -7,8 +7,6 @@ before_script:
 
 script:
 - composer test
-
-after_script:
 - composer run zip
 
 deploy:
