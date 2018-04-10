@@ -9,5 +9,15 @@
             "email": "github@roelof.io",
             "homepage": "https://github.com/roelofr"
         }
-    ]
+    ],
+    "scripts": {
+        "test": [
+            "@php -l plugin.php",
+            "phpcs -p"
+        ],
+        "zip": "zip -9 visitor-counter-shortcode.zip plugin.php LICENSE.md phpcs.xml composer.json"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.2"
+    }
 }
