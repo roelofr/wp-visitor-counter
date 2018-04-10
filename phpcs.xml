@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset>
+  <!-- Directories -->
+  <file>./plugin.php</file>
+
+  <!-- We just use PSR-2, excluding one rule -->
+  <rule ref="PSR2" />
+
+  <!-- Always enable the colours -->
+  <arg name="colors"/>
+</ruleset>
