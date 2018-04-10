@@ -188,8 +188,14 @@ SQL;
     public function shortcode() : string
     {
         // Get count
-        $result = $this->db->query(sprintf(self::QUERY_COUNT, $this->tableName));
-        return $result;
+        $result = $this->db->get_results(sprintf(self::QUERY_COUNT, $this->tableName));
+
+        if (count($result) == 0) {
+            return number_format_i18n(0);
+        } else {
+            $first = array_shift($result);
+            return number_format_i18n($first->count, 0);
+        }
     }
 
     /**
@@ -203,3 +209,5 @@ SQL;
         ));
     }
 }
+
+Plugin::hook();
