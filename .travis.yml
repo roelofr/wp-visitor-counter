@@ -1,0 +1,21 @@
+language: php
+
+php: 7
+
+before_script:
+- composer install --dev --no-progress --no-suggest
+
+script:
+- composer test
+
+after_script:
+- composer run zip
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Q1wlDAUVge0CfzODyqca47cQpqhuXT6t0FQ9oA1XuQdJ+8O478VQFHFKHP1sWmA70nMjrtX7tPLqcQkWS8Iyv4vR0tLc6x8cSGIXXh/PH0sOajhLnIgknGBZzjrwIjrl4rFq/IqVEV6DFubmo9s+oCYXKVyP+vNSDn6WnvN0+cd7f5PM4Ujpu2kJCFA1g205buCHiJEWf20YSNTRxydgNTzAdc3Xmmz+hS9eQ3xkGBfgeo9vAF1gobwcc1FwyJWfEhpdPFuuVAf/Deacsdqoamc7wdmzfGhLwC3xmQVxqS4obchkGPRIq33E/7jg2jiOF8bXx7TZ/n2pJlTMkukhE3RokOT0A7F/kN8FcqHnKcE/8ihuAuoAEtzrCdft/4L2NX+tSx1NVGNp61bKlJKUxRmSbVYXmn19MWeND+El6Dnifuw8efR9/By+CeDIKbyDQoSDyEG2aUSD5G/JXL/9smYqvO7WZPd0BZ/bLQV1wqNhpHojO9E2tJTAwH7aHFDRxw6AlkjKLTwuCZNBTnIn+nh+M6Hlp7mYjHglbvJxpeZwSdOhdLFJA+ayp5b40FxGPgM6acdOFR67eVCvpjr6Qyu980gjB7ahUSQEf/y0cbsBY/lycfgGZ6JUjSOd8vNff+ohYVaUrnmsuo07SZbIvaxBg0mbYFlQENSOfkXeVes=
+  file: visitor-counter-shortcode.zip
+  on:
+    tags: true
+    repo: roelofr/wp-visitor-counter
